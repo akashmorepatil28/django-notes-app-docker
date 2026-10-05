@@ -1,30 +1,23 @@
-# Simple Notes App for TWS Community
-This is a simple notes app built with React and Django.
+# Django Notes App - Docker Compose
 
-## Requirements
-1. Python 3.9
-2. Node.js
-3. React
+Nginx + Django + MySQL, run as 3 containers with Docker Compose.
+I cloned an open-source Django notes app and wrote the Docker
+setup for it as DevOps practice.
+Original app: https://github.com/LondheShubham153/django-notes-app
 
-## Installation
-1. Clone the repository
-```
-git clone https://github.com/LondheShubham153/django-notes-app.git
-```
+Request flow: Browser -> Nginx (80) -> Django (8000) -> MySQL (3306)
 
-2. Build the app
-```
-docker build -t notes-app .
-```
+## Run
+docker compose up -d --build
 
-3. Run the app
-```
-docker run -d -p 8000:8000 notes-app:latest
-```
+## Problems I ran into
+- Django couldn't find the DB: `.env` had the wrong host name. It must
+  match the compose service name (`mysql`).
+- Nginx kept restarting: it wasn't on the same network as Django.
+- Nginx "host not found in upstream": the name in `nginx/default.conf`
+  didn't match the service name (`django`).
 
-## Nginx
+All three came down to the same thing: names in config files must match
+compose service names, and services must share a network.
 
-Install Nginx reverse proxy to make this application available
-
-`sudo apt-get update`
-`sudo apt install nginx`
+Guided practice project, I used an AI assistant to help read some errors.
